@@ -68,23 +68,19 @@ class MqttRcSwitch : public mosqpp::mosquittopp
       printf("Connected with code %d.\n", rc);
 
       if (rc == 0)
-      {
-    		/* Only attempt to subscribe on a successful connect. */
-    		subscribe(NULL, "/rcswitch");
-    	}
+    		subscribe(NULL, "/rcswitch/+");
     }
 
 		void on_message(const struct mosquitto_message *message)
     {
-      if (strcmp(message->topic, "/rcswitch") != 0)
-        return;
-
+      std::string topic(message->topic);
       std::string pl((const char *)message->payload, message->payloadlen);
 
       // Extract values from string in form XXXXX:C:V
-      std::string sys = pl.substr(0, 5);
-      int channel = lexical_cast<int>(pl.substr(6, 1));
-      int value = lexical_cast<int>(pl.substr(8, 1));
+      std::string sys = topic.substr(10, 5);
+      int channel = lexical_cast<int>(topic.substr(16, 1));
+
+      int value = lexical_cast<int>(pl);
 
       // Get realtime prio
       piHiPri(20);
