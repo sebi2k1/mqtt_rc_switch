@@ -101,6 +101,8 @@ class MqttRcSwitch : public mosqpp::mosquittopp
 
 int main(int argc, char ** argv)
 {
+  daemon(0, 0);
+
   // Create MQTT RC Switch
   MqttRcSwitch rcSwitch("rcswitch", "localhost", 1883);
 
